@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="haven">
+  <title>雨卉的心灵避风港与成长地图</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Haven base adapted to requested Blue-Gray palette */
+      --background: #f4f7fa;
+      --surface-container-low: #ffffff;
+      --surface-container: #EAF1F8;
+      --surface-container-high: #dce7f2;
+
+      /* Ink (high-contrast reading surfaces >= 4.5:1) */
+      --on-surface: #1e2a35;
+      --on-surface-variant: #4a5b6c;
+
+      /* Rules & secondary structural tones */
+      --outline: #8BAECF;
+      --outline-variant: #d3e0ec;
+
+      /* Accents */
+      --primary: #355F84;
+      --primary-hover: #294c6b;
+      --on-primary: #ffffff;
+      --primary-container: #EAF1F8;
+      --on-primary-container: #22415c;
+      --secondary: #3f6250;
+      --secondary-soft: #e6efe9;
+      --tertiary: #8BAECF;
+      --warm-accent: #8b5e45;
+      --warm-soft: #f5ede8;
+      --error: #a63d32;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #355F84;
+      --data-2: #8BAECF;
+      --data-3: #4f7360;
+      --data-4: #9a7056;
+      --data-context: #c2d1df;
+
+      /* Semantic */
+      --positive: #3f6250;
+      --warning: #8f6332;
+      --focus: #355F84;
+
+      /* Typography */
+      --font-headline: 'Noto Sans SC', 'Outfit', sans-serif;
+      --font-body: 'Noto Sans SC', 'Hanken Grotesk', sans-serif;
+      --font-label: 'Noto Sans SC', 'Outfit', sans-serif;
+
+      /* Narrative Type Scale */
+      --display-size: clamp(2.125rem, 1.4rem + 2.6vw, 3.35rem);
+      --headline-size: clamp(1.5rem, 1.15rem + 1.3vw, 2.15rem);
+      --subhead-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.35rem);
+      --body-size: clamp(1rem, 0.96rem + 0.18vw, 1.09375rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Shape */
+      --rounded: 0.375rem;
+      --rounded-lg: 0.5rem;
+      --rounded-full: 9999px;
+
+      /* Haven Effects (zero drop shadows, hairline architecture) */
+      --hairline: 1px solid var(--outline-variant);
+      --hairline-control: 1px solid var(--outline);
+      --hairline-primary: 2px solid var(--primary);
+      --elevation: none;
+
+      /* Spacing Scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 5.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 140ms;
+      --dur-short: 240ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      overflow-x: clip;
+    }
+    body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* Page Grid */
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding: var(--space-lg) var(--space-lg) var(--space-3xl);
+      max-width: 1120px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Typography Treatments (Haven) */
+    .headline {
+      font-family: var(--font-headline);
+      font-weight: 300;
+      letter-spacing: -0.015em;
+      line-height: 1.18;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .headline-display {
+      font-size: var(--display-size);
+    }
+    .headline-section {
+      font-size: var(--headline-size);
+    }
+    .headline b, .headline strong {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      color: var(--on-surface-variant);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .caption-sage {
+      font-family: var(--font-body);
+      font-size: var(--label-size);
+      font-weight: 500;
+      color: var(--secondary);
+      margin-top: var(--space-xs);
+      line-height: 1.5;
+    }
+
+    .prose {
+      max-width: 65ch;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .prose-muted {
+      max-width: 65ch;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Haven Hairline Panels */
+    .panel {
+      background: var(--surface-container-low);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--elevation);
+      padding: var(--space-lg);
+    }
+    .panel-tinted {
+      background: var(--surface-container);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+
+    /* Top Navigation Bar (static header, non-sticky) */
+    .site-header {
+      border-bottom: var(--hairline);
+      padding-bottom: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      font-size: var(--label-size);
+      font-weight: 500;
+      border-radius: var(--rounded);
+      border-bottom: 2px solid transparent;
+      transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+    .nav-link:hover {
+      color: var(--primary);
+      background-color: var(--surface-container);
+    }
+    .nav-link.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Section Dividers */
+    .section + .section {
+      border-top: var(--hairline);
+      padding-top: var(--space-2xl);
+    }
+    .section-header {
+      display: grid;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      font-weight: 500;
+      font-size: 0.92rem;
+      cursor: pointer;
+      border: var(--hairline-control);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .btn:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+    }
+    .btn:active {
+      background: var(--surface-container-high);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+    .btn-ghost {
+      border-color: transparent;
+      background: transparent;
+      color: var(--primary);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-container);
+      border-color: transparent;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--rounded-full);
+      font-size: var(--label-size);
+      font-weight: 500;
+      background: var(--surface-container);
+      color: var(--on-primary-container);
+    }
+    .tag-sage {
+      background: var(--secondary-soft);
+      color: var(--secondary);
+    }
+    .tag-warm {
+      background: var(--warm-soft);
+      color: var(--warm-accent);
+    }
+
+    /* Hero Asymmetric Layout */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    .hero-letter {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .hero-aside {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .gentle-quote {
+      border-left: 3px solid var(--primary);
+      padding: var(--space-sm) 0 var(--space-sm) var(--space-md);
+      color: var(--on-surface);
+      font-size: 1.02rem;
+    }
+
+    /* Key Figures Grid (Asymmetric proportions) */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    .metric-tile {
+      display: grid;
+      gap: var(--space-xs);
+      align-content: start;
+    }
+    .metric-value {
+      font-family: var(--font-headline);
+      font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+    }
+
+    /* Trajectory SVG Chart Container */
+    .chart-shell {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+    }
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .legend-swatch {
+      width: 14px;
+      height: 3px;
+      border-radius: var(--rounded-full);
+      display: inline-block;
+    }
+    .swatch-primary { background-color: var(--data-1); }
+    .swatch-distress { background-color: var(--data-4); }
+    .chart-svg-wrap {
+      width: 100%;
+      min-height: 280px;
+      overflow: hidden;
+    }
+    .chart-svg-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chart-point-btn {
+      cursor: pointer;
+    }
+    .chart-readout {
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    /* Journey Timeline Explorer */
+    .phase-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .phase-btn {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-control);
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .phase-btn:hover {
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+    .phase-btn[aria-pressed="true"] {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .timeline-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .session-list {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .session-item {
+      width: 100%;
+      min-height: 48px;
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      display: grid;
+      gap: 0.15rem;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .session-item:hover {
+      background: var(--surface-container);
+    }
+    .session-item[aria-selected="true"] {
+      background: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .session-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .session-item-title {
+      font-weight: 500;
+      color: var(--on-surface);
+      font-size: 0.96rem;
+    }
+    .session-item[aria-selected="true"] .session-item-title {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .session-detail {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .detail-quote {
+      background: var(--surface-container);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      padding: var(--space-md);
+      color: var(--on-surface);
+    }
+    .detail-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding-top: var(--space-md);
+      border-top: var(--hairline);
+    }
+
+    /* Thematic Explorers */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .theme-card {
+      display: grid;
+      gap: var(--space-md);
+      align-content: start;
+      transition: border-color var(--dur-micro) var(--ease-out);
+    }
+    .theme-card:hover {
+      border-color: var(--outline);
+    }
+    .theme-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .theme-title {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .theme-details {
+      border-top: var(--hairline);
+      padding-top: var(--space-md);
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .theme-details[hidden] {
+      display: none;
+    }
+
+    /* Interactive Toolkit Section */
+    .toolkit-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Breathing Pacer */
+    .breathing-card {
+      display: grid;
+      gap: var(--space-lg);
+    }
+    .mode-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .mode-chip {
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-control);
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .mode-chip[aria-pressed="true"] {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .pacer-stage {
+      display: grid;
+      place-items: center;
+      min-height: 250px;
+      background: var(--surface-container);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      position: relative;
+    }
+    .pacer-ring-outer {
+      width: 170px;
+      height: 170px;
+      border-radius: var(--rounded-full);
+      border: 2px solid var(--outline);
+      background: var(--surface-container-low);
+      display: grid;
+      place-items: center;
+      transform: scale(0.84);
+      transition: transform var(--dur-long) var(--ease-in-out), background-color var(--dur-short) var(--ease-out);
+    }
+    .pacer-ring-inner {
+      text-align: center;
+      display: grid;
+      gap: 0.15rem;
+      padding: var(--space-sm);
+    }
+    .pacer-phase-text {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.05rem;
+    }
+    .pacer-count-text {
+      font-family: var(--font-headline);
+      font-size: 1.75rem;
+      font-weight: 500;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .pacer-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    /* Safety Island & Check-in */
+    .stack-col {
+      display: grid;
+      gap: var(--space-lg);
+    }
+    .step-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .step-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: var(--space-sm);
+      align-items: start;
+      padding: var(--space-sm);
+      border-radius: var(--rounded);
+      background: var(--surface-container);
+    }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--rounded-full);
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: var(--label-size);
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+    }
+
+    /* Battery & Routine Check-in */
+    .checkin-box {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .field-label {
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+      min-height: 44px;
+      cursor: pointer;
+    }
+    .color-mood-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .mood-pill {
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-control);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-size: var(--label-size);
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .mood-pill[aria-pressed="true"] {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .routine-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .routine-list {
+      display: grid;
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .check-row:hover {
+      background: var(--surface-container);
+    }
+    .check-row input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* New Memo Section */
+    .memo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .textarea-field {
+      width: 100%;
+      min-height: 130px;
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline-control);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      resize: vertical;
+      line-height: 1.6;
+    }
+    .textarea-field:focus {
+      border-color: var(--primary);
+    }
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .prompt-chip {
+      min-height: 38px;
+      padding: 0.25rem 0.7rem;
+      border-radius: var(--rounded-full);
+      border: var(--hairline);
+      background: var(--surface-container);
+      color: var(--on-primary-container);
+      font-size: var(--label-size);
+      cursor: pointer;
+    }
+    .prompt-chip:hover {
+      border-color: var(--primary);
+    }
+    .memo-feed {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .memo-entry {
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-container-low);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .memo-entry-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .inline-status {
+      font-size: var(--label-size);
+      color: var(--secondary);
+      min-height: 1.4em;
+    }
+    .inline-error {
+      color: var(--error);
+    }
+
+    /* Gentle Footer */
+    .site-footer {
+      border-top: var(--hairline);
+      padding-top: var(--space-xl);
+      display: grid;
+      gap: var(--space-sm);
+      color: var(--on-surface-variant);
+      font-size: var(--label-size);
+    }
+
+    /* Container Queries for Adaptive Inner Panels */
+    .card-wrapper { container-type: inline-size; }
+    @container (max-width: 420px) {
+      .chart-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 860px) {
+      .hero-grid,
+      .timeline-layout,
+      .toolkit-grid,
+      .memo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md) var(--space-md) var(--space-2xl);
+        gap: var(--space-lg);
+      }
+      .panel, .panel-tinted {
+        padding: var(--space-md);
+      }
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-grid">
+    <!-- Top Header -->
+    <header class="site-header">
+      <div class="brand-mark">
+        <i data-lucide="compass" aria-hidden="true"></i>
+        <span>雨卉的心灵避风港 · 成长回顾与日常地图</span>
+      </div>
+      <nav class="nav-links" aria-label="页面章节导航">
+        <a class="nav-link active" href="#overview">当下坐标</a>
+        <a class="nav-link" href="#journey">咨询足迹</a>
+        <a class="nav-link" href="#themes">生命主题</a>
+        <a class="nav-link" href="#toolkit">安抚工具箱</a>
+        <a class="nav-link" href="#memo">此刻备忘录</a>
+      </nav>
+    </header>
+
+    <!-- Section 1: Hero & Holistic Overview -->
+    <section id="overview" class="section">
+      <div class="hero-grid">
+        <div class="hero-letter">
+          <span class="label">
+            <i data-lucide="sun-medium" aria-hidden="true"></i>
+            <span>2025年9月 – 2026年11月 · 十四个月的温柔同行</span>
+          </span>
+          <h1 class="headline headline-display">
+            致雨卉：在漫长黑夜之后，<strong>看见依然在场的光亮</strong>
+          </h1>
+          <p class="prose">
+            雨卉，这不仅是一份咨询记录的梳理，更是一张属于你自己的生命地图。过去五年多里，你曾经历过药物更换后的深重坠落、无法言说的惊恐与“心死”般的冷漠；但同时，在一次次诚实的对话里，我们也共同见证了你的思维变得更加清晰流畅、恐慌的潮水大幅退去，以及那些藏在细节里的生命火种从未真正熄灭。
+          </p>
+          <p class="prose-muted">
+            这里不要求你“立刻变回过去那个满分的自己”，也不强迫你必须充满意义。正如我们约定好的目标：先让日子变得“没那么糟”，先照顾好眼前的自己，哪怕是一顿饭、一次遛狗、一分钟的安静呼吸，都值得被看见和肯定。
+          </p>
+          <blockquote class="gentle-quote">
+            “意义不在远方，而在脚下尘埃般微小的行动里。创伤损伤的是‘连接的能力’，而不是你生命的本质。”
+          </blockquote>
+        </div>
+
+        <aside class="hero-aside">
+          <div class="panel-tinted">
+            <span class="label">
+              <i data-lucide="shield-check" aria-hidden="true"></i>
+              <span>给此刻的你 · 温柔提醒</span>
+            </span>
+            <p class="prose" style="margin-top: var(--space-sm);">
+              如果你今天感到电量很低、只想在床上待着，没关系——床铺和安静的房间是你的<strong>“避风港”</strong>，不是偷懒或失败。当你多出哪怕 5% 的力气时，可以来下面的安抚工具箱挑一件小事陪自己度过。
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-md);">
+              <a class="btn btn-primary" href="#toolkit" style="text-decoration: none;">
+                <i data-lucide="wind" aria-hidden="true"></i>
+                <span>打开呼吸与安全岛</span>
+              </a>
+              <a class="btn" href="#memo" style="text-decoration: none;">
+                <i data-lucide="pen-line" aria-hidden="true"></i>
+                <span>写下此刻一句话</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <span class="label">
+              <i data-lucide="heart-handshake" aria-hidden="true"></i>
+              <span>始终陪伴你的现实支持</span>
+            </span>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-sm);">
+              <span class="tag tag-sage">15岁老犬 · 乖乖</span>
+              <span class="tag tag-sage">活泼幼犬 · 灰灰</span>
+              <span class="tag">两只猫 · 叮叮与当当</span>
+              <span class="tag tag-warm">妈妈的笑容与饭菜</span>
+              <span class="tag">天义老师与孙医生</span>
+            </div>
+            <p class="caption-sage">
+              在最黑暗的时候，想起乖乖心情依然能有满分；而当当突然弓背蹭你、妈妈微笑的时候，真实世界仍在温柔地回应你。
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- 4 Key Progress Metrics -->
+      <div class="metrics-grid">
+        <div class="panel metric-tile">
+          <span class="label">幸福感与开心时刻</span>
+          <div class="metric-value">0 → 6–7 分</div>
+          <p class="caption-sage">从接近零分的麻木空虚，到看见妈妈笑、陪伴乖乖与灰灰时能体会到 6–7 分的开心</p>
+        </div>
+        <div class="panel metric-tile">
+          <span class="label">“问题 U”惊恐发作</span>
+          <div class="metric-value">连续 3 周 0 发作</div>
+          <p class="caption-sage">痛苦峰值曾达 10 分、持续通宵；2026 年 10 月已稳定降至 2–3 分且曾连续三周未发作</p>
+        </div>
+        <div class="panel metric-tile">
+          <span class="label">白天清醒“电池电量”</span>
+          <div class="metric-value">10% → 70%</div>
+          <p class="caption-sage">即便偶有整夜失眠，也能保持充足体力，摆脱了过去极度昏沉耗竭的崩溃感</p>
+        </div>
+        <div class="panel metric-tile">
+          <span class="label">日常微步结构锚点</span>
+          <div class="metric-value">睡前 3 · 晨起 5</div>
+          <p class="caption-sage">从“做毫无意义的小事”起步，逐渐建立起洗漱、读书、陪乖乖与自主整理的生活边界</p>
+        </div>
+      </div>
+
+      <!-- Trajectory Chart -->
+      <div class="panel card-wrapper" style="margin-top: var(--space-xl);">
+        <div class="chart-shell">
+          <div class="chart-header">
+            <div>
+              <span class="label">咨询进展与状态变化轨迹（2025.09 – 2026.11）</span>
+              <h2 class="headline" style="font-size: var(--subhead-size); margin-top: var(--space-xs);">
+                恐慌潮水渐退，<strong>平静的立足点正在变宽</strong>
+              </h2>
+            </div>
+            <div class="chart-legend" aria-label="图表图例">
+              <span class="legend-item">
+                <span class="legend-swatch swatch-primary"></span>
+                <span>平静 / 积极感受分（0–10分）</span>
+              </span>
+              <span class="legend-item">
+                <span class="legend-swatch swatch-distress"></span>
+                <span>“问题 U”/ 痛苦冲击程度（0–10分）</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="chart-svg-wrap" id="trajectory-chart-container">
+            <svg id="trajectory-svg" viewBox="0 0 820 290" role="img" aria-label="雨卉2025年9月至2026年11月状态变化趋势图">
+              <!-- Gridlines & Axes rendered via CSS variables -->
+              <line x1="56" y1="30" x2="788" y2="30" stroke="var(--outline-variant)" stroke-width="1"></line>
+              <line x1="56" y1="74" x2="788" y2="74" stroke="var(--outline-variant)" stroke-width="1"></line>
+              <line x1="56" y1="118" x2="788" y2="118" stroke="var(--outline-variant)" stroke-width="1"></line>
+              <line x1="56" y1="162" x2="788" y2="162" stroke="var(--outline-variant)" stroke-width="1"></line>
+              <line x1="56" y1="206" x2="788" y2="206" stroke="var(--outline-variant)" stroke-width="1"></line>
+              <line x1="56" y1="250" x2="788" y2="250" stroke="var(--outline)" stroke-width="1"></line>
+
+              <!-- Y-axis labels -->
+              <text x="44" y="34" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">10分</text>
+              <text x="44" y="78" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">8分</text>
+              <text x="44" y="122" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">6分</text>
+              <text x="44" y="166" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">4分</text>
+              <text x="44" y="210" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">2分</text>
+              <text x="44" y="254" text-anchor="end" fill="var(--on-surface-variant)" font-size="11">0分</text>
+
+              <!-- Dynamic paths and nodes injected by JS -->
+              <g id="chart-paths"></g>
+              <g id="chart-nodes"></g>
+              <g id="chart-x-labels"></g>
+            </svg>
+          </div>
+
+          <div class="chart-readout" id="chart-readout" aria-live="polite">
+            <div>
+              <span class="label" id="chart-readout-date">点击上方任意节点查看当时的真实切片</span>
+              <div id="chart-readout-text" style="font-weight: 500; margin-top: 0.2rem;">
+                2026年10月 · 连续三周未发作惊恐，看到妈妈笑与陪伴乖乖、灰灰时开心可达 6–7 分。
+              </div>
+            </div>
+            <span class="tag tag-sage" id="chart-readout-badge">阶段四 · 接纳与自主</span>
+          </div>
+          <p class="label" style="color: var(--on-surface-variant);">
+            注：上图分值均严格取自历次会谈中雨卉自己的主观打分（如 2025.09 的 0 分与 10 分记忆、2025.10 的 1–2 分与 7–8 分痛苦、2025.12 呼吸 5–6 分、2026.01 的 3–4 分、2026.04 的 2–3 分、2026.10 的 6–7 分开心），仅用于回顾个体生命脉络。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Interactive Journey & Milestone Timeline -->
+    <section id="journey" class="section">
+      <div class="section-header">
+        <span class="label">
+          <i data-lucide="map" aria-hidden="true"></i>
+          <span>四段咨询历程 · 看见每一步的重量</span>
+        </span>
+        <h2 class="headline headline-section">
+          从“没有神了”的深夜，走到<strong>“建立安全岛”的清晨</strong>
+        </h2>
+        <p class="prose-muted">
+          选择不同的阶段，点击每一场对话的里程碑。你会发现，改变并不是戏剧化的“一夜间痊愈”，而是在一次次坦诚与微小的实验里，长出了属于自己的应对力量。
+        </p>
+      </div>
+
+      <div class="phase-pills" role="group" aria-label="筛选咨询阶段">
+        <button type="button" class="phase-btn" data-phase="1" aria-pressed="true" onclick="selectPhase(1)">
+          阶段一 · 看见与命名 (2025.09–10)
+        </button>
+        <button type="button" class="phase-btn" data-phase="2" aria-pressed="false" onclick="selectPhase(2)">
+          阶段二 · 觉察与安放 (2025.12–2026.02)
+        </button>
+        <button type="button" class="phase-btn" data-phase="3" aria-pressed="false" onclick="selectPhase(3)">
+          阶段三 · 节律与蓄能 (2026.03–05)
+        </button>
+        <button type="button" class="phase-btn" data-phase="4" aria-pressed="false" onclick="selectPhase(4)">
+          阶段四 · 接纳与自主 (2026.09–11)
+        </button>
+      </div>
+
+      <div class="phases-expanded" style="margin-top: 1.5rem;">
+    <div class="phase-block" style="margin-bottom: 2rem; border-left: 3px solid #355F84; padding-left: 1rem;">
+      <h3 style="color: #1e2a35; margin-bottom: 0.75rem;">阶段一 · 看见与命名 (2025.09 – 2025.10)</h3>
+      <div class="session-cards-grid" style="display: grid; gap: 1rem;">
+  
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第1次 · 允许黑暗被如实说出</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-09-10 · 建立安全容器</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “从8分跌到0分，感觉与神断绝了，但你还愿意让我走进你生命的低谷里。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">在这场起点对话里，你没有假装坚强，而是如实表达了药物误诊与换药带来的伤害、想结束一切的绝望，以及对失去信仰光芒的哀伤。咨询师没有强行讲大道理，而是用“三天的黑暗之后会有清晨的曙光”陪你一起待在低谷里。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：诚实地说出“我现在没有感觉”，本身就是极高贵的真实，不再需要用伪装讨好任何人。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第2次 · 满分的乖乖与完好清单</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-09-25 · 发现未被摧毁的角落</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “想到乖乖的时候，心情打满分（10分）。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">我们一起回忆了陪伴你15年、性格内向不爱叫的狗狗“乖乖”。原来在自以为“全盘毁坏”的世界里，你依然拥有完好的视听味觉、能走路说话，依然拥有爸爸妈妈和乖乖。你的生命既有受损的地方，也同时保有很多完好的部分。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：坏的部分和好的部分在身体里同时存在，那10分的珍贵记忆证明你的心依然有爱的能力。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第3次 · 给神秘恐惧起名“字母 U”</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-10-02 · 现象外化</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “既然怎么选都觉得没有意义，那我们就一起随便做各种‘毫无意义的小事’吧。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">把那些突如其来、无法言说的可怕体验命名为“字母 U”（Unspeakable），让它不再是一团吞没你的黑影，而是一个可以被记录出现时间、时长和强度的对象。同时我们梳理了18–20小时的漫长睡眠节律，决定把“毫无意义的小实验”变成常态。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：卸下“必须有意义、必须变好”的沉重包袱，允许自己在没有动力时做一点随机小事。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第4–5次 · 叮叮当当、鸡胸肉与湖面微风</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-10-09 & 10-23 · 感官与呼吸唤醒</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “给狗狗煮的无调料水煮鸡胸肉，我也比较喜欢那一种。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">过去那一周你打出了1–2分而不是0分，因为猫咪叮叮会蹭脚打呼、当当会撞乖乖求玩，也因为对食物还有食欲。随后在第5次会谈里，我们第一次练习了“湖面波纹深呼吸”，用想象中温柔的微风轻轻安抚心里的焦躁和杂念。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：生活的1–2分往往就藏在宠物蹭过来的体温、一份简单的水煮鸡胸肉和一次呼气里。</p>
+      </div>
+    </div></div>
+    <div class="phase-block" style="margin-bottom: 2rem; border-left: 3px solid #355F84; padding-left: 1rem;">
+      <h3 style="color: #1e2a35; margin-bottom: 0.75rem;">阶段二 · 觉察与安放 (2025.12 – 2026.02)</h3>
+      <div class="session-cards-grid" style="display: grid; gap: 1rem;">
+  
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第10–11次 · 七盏灯与五六分的宁静</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-12-04 & 12-12 · 注意力重建</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “呼吸练习的时候，让我印象最深的是那种宁静的感觉。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">你坦诚呼吸时大脑像“死机”一样很难完全跟上，但还是在当下体会到了5–6分的放松和宁静。咨询师用“大脑里的7盏注意力灯光”安慰你：哪怕现在只有一两盏灯亮着，也足够照见一点平静。紧接着的下一次会谈，你主动问起：“可以聊一聊你吗？”——这是对外界好奇与联结的萌芽。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：哪怕大脑只跟上了一小半，宁静感依然真实发生过；主动关心他人，意味着关系之门打开了一道缝。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第12次 · 情绪轮盘与“不去想它，它便退去”</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2025-12-25 · 认知解离</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “如果去想它、找它，就会出来一点；现在没有去想它的话，就没有。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">借助情绪轮盘的图片，你一点点定位了发作时的感受（冷淡、悲伤与恐惧）。更重要的发现是：恐惧在很大程度上依赖注意力的喂养；当你把目光从“寻找恐惧”移开时，它并不会自动占满全部生活。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：学会分辨“思考时的思维僵木”与“环境里的安全感”，不主动喂养恐惧。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第13–14次 · 绿色平静、紫色疲惫与自助呼吸</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-01-09 & 01-15 · 自我调动能力</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “就是发病的时候，我自己想起了做呼吸练习。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">在等待住院调药的阶段里，你第一次在发病时主动调动意识做起了呼吸练习——即便觉得“只做了一会儿、没有耐心”，这也标志着你不再完全被动挨打。我们还学了简化版眼周/人中敲击释放法，学会给此刻涂上“2–3分的绿色平静”与“一点紫色疲惫”，把手放在心口对自己说“愿你平安、健康、快乐”。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：在风暴中间能想起呼吸，就是非常了不起的主动力量；平静与疲惫可以和平共处。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第16–20次 · 状态回升至3–4分与当当的拥抱</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-01-29 ~ 02-26 · 康复趋势显现</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “我回家之后，当当居然弓着背来蹭我，它平时都不那样的！”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">调药与咨询推进后，整体情绪状态从近0分回升到最高3–4分，使用“冥想星球”配合日常呼吸。2月的一次线下见面后，你开心地对老师说“看到你就很开心”，回家后连平时高冷的猫咪当当都主动弓背蹭你——动物总能最敏锐地感受到人身上那股松弛下来的善意。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：没有人能把人“变回过去的样子”，但新的连接与喜悦正在今天的土壤里重新长出来。</p>
+      </div>
+    </div></div>
+    <div class="phase-block" style="margin-bottom: 2rem; border-left: 3px solid #355F84; padding-left: 1rem;">
+      <h3 style="color: #1e2a35; margin-bottom: 0.75rem;">阶段三 · 节律与蓄能 (2026.03 – 2026.05)</h3>
+      <div class="session-cards-grid" style="display: grid; gap: 1rem;">
+  
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">孙医生联合评估 · 语言与思维的显著提速</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-03-23 · 神经通路唤醒</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “我现在跟你沟通，感觉你的思维反应速度比以前明显快了，语言表达流畅了。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">久未联系的孙医生一眼看出了你的进步：语速、逻辑和自我表达能力比半年前清晰了许多，这说明大脑完全具备重塑与对话的条件。医生与天义老师决定一起通过你曾经热爱的英语、小说与记忆，温和地唤醒那些休眠的神经通路。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：旁人清晰可见的进步是客观事实——你的认知与表达功能正在扎实恢复。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第L03次 · 发作骤减与启用全新数字备忘录</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-04-02 · 阻断病理循环</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “去年高频持久的发作，今年降到有时一周无发，持续时间也缩到了30–60分钟。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">这是极其鼓舞人心的转折点。为了赴福建行程做准备，我们商定了每日遛乖乖、每日读一点英文提一个小问题，以及最关键的一步：把写满痛苦回忆的旧手机备忘录收起来，开启一份“此刻的我”专属新备忘录，停止让旧文字反复强化病态认同。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：隔离旧叙事、用“遛狗+阅读+新书写”三个微小锚点重新托住白天的时间。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第L04次 · 零发作的一周与“意义在脚下”</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-04-09 · 人生得失重构</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “主评痛苦从峰值10分降到了2–3分，本周没有任何发病情况。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">通过共同梳理“人生得失日历”，你看见了小学阶段和五年前两次“失去光明”的螺旋轨迹，也更清晰地盘点了父母之爱、工友与幼时伙伴、乖乖曾带给你的滋养。与其执着于“宏大救赎会不会瞬间降临”，不如先悬置判断，在尘埃般微小的日常里用行动去试探水温的冷暖。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：意义不在远方的神迹里，而在脚下每一件“正在做着的小事”中慢慢渗出。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第L06–L08次 · 茶壶生命力模型与4-2-8呼吸</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-04-23 ~ 05-07 · 具身修复</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “创伤破坏的是‘连接能力’和茶壶上的缺口，而不是你生命的本质。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">我们一起画出了“茶壶模型”：运动、祷告、与宠物相处是在加水，而药物冲击与创伤是漏水口。因为你对叮叮当当还有微弱感觉，证明你的茶壶并没有碎掉！针对严重失眠，咨询师没有强迫你做复杂任务，而是共同选定了最低门槛的“4-2-8 呼吸法”和干净治愈的中文儿童绘本，帮紧张的神经系统慢慢回弹。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：接纳修复是渐进的神经可塑性过程，睡前只做力所能及的 4-2-8 呼吸就是胜利。</p>
+      </div>
+    </div></div>
+    <div class="phase-block" style="margin-bottom: 2rem; border-left: 3px solid #355F84; padding-left: 1rem;">
+      <h3 style="color: #1e2a35; margin-bottom: 0.75rem;">阶段四 · 接纳与自主 (2026.09 – 2026.11)</h3>
+      <div class="session-cards-grid" style="display: grid; gap: 1rem;">
+  
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">复盘与第2次 · “独一无二的苦咖啡”</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-09-25 & 10-02 · 存在接纳</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “看到我妈妈笑就会心里好一点，还有乖乖和灰灰特别活泼……开心能有6–7分。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">停询后重新连线，你的发病时长已从过去的“一通宵”缩减到“顶多1小时”。面对依然会冒出的悲伤与无力，你列出“以何为乐”与“以何为苦”，也探讨了将来去做不需要太多社交的烘焙工作（状态好烤一个面包，累了就休息）。咨询师送给你一个隐喻：命运递给你这杯“独一无二的苦咖啡”，倒掉还是端起，选择权在你手里。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：痛苦想哭喊并不是“疯了”，而是正常的情绪需要出口；目标定为“没那么糟，就值得过一过的人生”。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第4–5次 · 连续三周稳态与“卧床避风港”</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-10-16 & 10-23 · 去病理化照护</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “连续第三周惊恐没有发作，每天坚持耐心地训练高能量幼犬灰灰。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">新成员幼犬“灰灰”的到来让家里热闹了起来。面对醒来后偶尔泛起的空虚枯燥感，咨询师把“赖在床上”彻底去病理化：那不是颓废，而是身心耗竭时的自我保护“避风港”。同时打通手环睡眠数据共享，用客观数据陪伴你看到正在发生的变化。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：学会允许低能量期的存在，不把“想躺着”当成道德或人格的失败。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第6次 · 70%体力、安全岛智慧与方块呼吸</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-10-29 · 自主调节里程碑</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “哪怕前夜失眠，白天精力居然还有70%，并在散步出现异样时自己找安静地方坐下平复。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">这是极具里程碑意义的一次飞跃：失眠不再等同于精神崩溃。在整理杂物和夜里散步时感到轻微异样，你没有慌乱逃跑，而是自己找到无人安静的地方坐下闭眼等待平复——这正是“安全岛自主退守能力”的成熟！现场还一起演练了方块呼吸（4-4-4-4）、舌抵上颚呼气与八段锦微步练习。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：你已经亲手掌握了“在风浪出现时给自己搭一个安全岛”的能力。</p>
+      </div>
+    
+      <div class="session-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0; color: #22415c; font-size: 1.05rem;">第7次与最新计划 · 边界独立与晨昏微步</h4>
+          <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">2026-11-07 & 近期方案 · 成年自主权</span>
+        </div>
+        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 3px solid #8baecf; background: #f8fafc; color: #355f84; font-style: italic;">
+          “先从自己倒水、自己整理衣物开始负责——照顾好自己，是未来帮助别人的起点。”
+        </blockquote>
+        <p style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">我们把目光转向家庭日常里的自主权：与妈妈温柔沟通，把个人饮水、整理衣物与出行物品交还给你自己打理，因为新鲜的小挑战才能带来真实的情绪涟漪和胜任感。最新落地的“睡前3件事（刷牙、阅读、拉伸）”与“晨起5件事（铺床、刷牙、陪乖乖、吃饭、拍照打卡）”，正一步步把安稳变成每天醒来后的习惯。</p>
+        <p style="color: #22415c; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">💡 关键收获：自主管理自己的生活细节，就是为未来独立生活与参与社会攒下的第一份底气。</p>
+      </div>
+    </div></div></div></section>
+
+    <!-- Section 3: Thematic Reflections -->
+    <section id="themes" class="section">
+      <div class="section-header">
+        <span class="label">
+          <i data-lucide="layers" aria-hidden="true"></i>
+          <span>理解自己的五个切面</span>
+        </span>
+        <h2 class="headline headline-section">
+          把散落在对话里的理解，<strong>拼回完整的你</strong>
+        </h2>
+        <p class="prose-muted">
+          在十几轮深入会谈中，有五个反复出现的生命主题。它们共同解释了你的痛苦从何而来，也指出了你的力量藏在哪里。点击每张卡片可以展开深入笔记与温柔自问。
+        </p>
+      </div>
+
+      <div class="theme-grid-expanded" style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
+    <div class="theme-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">01 · 情绪与躯体</span>
+        <h3 style="margin: 0; color: #1e2a35;">与“字母 U”相处：从被吞没到自主退守</h3>
+      </div>
+      <p style="color: #355F84; font-weight: 500; margin: 0.5rem 0;">把无法言说的不适感外化为“问题 U”，学会不与恐惧硬碰硬，而是用安全岛、呼吸与颜色标记温柔托住自己。</p>
+      <ul style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; padding-left: 1.25rem;">
+        <li style="margin-bottom: 0.35rem;">你发现“不去故意想它、找它时，它就不会主动出来”，说明注意力在哪里，感受就会在哪里放大。</li><li style="margin-bottom: 0.35rem;">发作频率已从高频通宵缩短至 30–60 分钟，甚至达到过“连续 3 周未发作”；痛苦峰值从 10 分回落到 2–3 分。</li><li style="margin-bottom: 0.35rem;">想喊、想哭不是“疯了”，恰恰说明你压抑了太久的情绪需要健康的出口；你能够克制不吓到妈妈和小狗，本身就证明你的理智非常稳固。</li>
+      </ul>
+      <blockquote style="margin-top: 0.75rem; padding: 0.5rem 1rem; border-left: 3px solid #3f6250; background: #f0f7f3; color: #234333;">
+        🌸 温柔自问：下次再有不舒服的苗头时，我可不可以像 10月29日那样，先找个安静的地方坐下来，闭上眼等这阵风自己过去？
+      </blockquote>
+    </div>
+  
+    <div class="theme-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">02 · 宠物与连接</span>
+        <h3 style="margin: 0; color: #1e2a35;">乖乖、灰灰与叮叮当当：它们是你心里的光</h3>
+      </div>
+      <p style="color: #355F84; font-weight: 500; margin: 0.5rem 0;">在最觉得“与世界格格不入”的时刻，动物伙伴们用最纯粹的方式证明：你依然有爱，也依然被爱着。</p>
+      <ul style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; padding-left: 1.25rem;">
+        <li style="margin-bottom: 0.35rem;">15 岁的老犬乖乖是你心底满分的快乐源泉——性格文静、听得懂家乡话，甚至连爱吃无调料水煮鸡胸肉的喜好都和你一样。</li><li style="margin-bottom: 0.35rem;">小猫叮叮每天会用身子蹭你的脚、倒在地上打呼噜；连高冷的当当都在一次线下咨询后破天荒地弓背来蹭你。</li><li style="margin-bottom: 0.35rem;">精力十足的小狗灰灰带来了拔河和排便训练的小挑战，每天耐心训练它的过程，正在悄然拉回你对现实生活的掌控感。</li>
+      </ul>
+      <blockquote style="margin-top: 0.75rem; padding: 0.5rem 1rem; border-left: 3px solid #3f6250; background: #f0f7f3; color: #234333;">
+        🌸 温柔自问：今天如果只做一件和它们有关的小事（摸一摸耳朵、看它们打个盹），我会觉得心里暖一点点吗？
+      </blockquote>
+    </div>
+  
+    <div class="theme-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">03 · 边界与胜任</span>
+        <h3 style="margin: 0; color: #1e2a35;">拿回日常的小事权：从“自己倒水”开始独立</h3>
+      </div>
+      <p style="color: #355F84; font-weight: 500; margin: 0.5rem 0;">减少“被全盘包办”的无力感，把日常起居的一小块领地交还给自己，是重建成人胜任感的第一步。</p>
+      <ul style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; padding-left: 1.25rem;">
+        <li style="margin-bottom: 0.35rem;">当生活里所有事都被照顾得滴水不漏时，人反而容易因为缺乏“自己能做到的新鲜挑战”而陷入平淡与冷漠。</li><li style="margin-bottom: 0.35rem;">你完全有独立管理金钱、照顾自己（甚至以前在外独自生活）的能力，只是和家人同住后被过度保护掩盖了。</li><li style="margin-bottom: 0.35rem;">和妈妈达成的小契约：衣物整理、出行打包、自己倒水，由你亲自负责；未来即使找工作，也可以优先选择低社交压力的烘焙或手作岗位，累了就休息。</li>
+      </ul>
+      <blockquote style="margin-top: 0.75rem; padding: 0.5rem 1rem; border-left: 3px solid #3f6250; background: #f0f7f3; color: #234333;">
+        🌸 温柔自问：今天在家里，有哪一件原本妈妈会代劳的小事，我想试试由我自己来完成？
+      </blockquote>
+    </div>
+  
+    <div class="theme-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">04 · 微步与节律</span>
+        <h3 style="margin: 0; color: #1e2a35;">睡前 3 步与晨起 5 步：不做宏大计划，只做这一刻</h3>
+      </div>
+      <p style="color: #355F84; font-weight: 500; margin: 0.5rem 0;">不要求一夜回到正常作息，把白天的“发呆空白”变成“新备忘录的温柔书写”，用可视化流程降低行动门槛。</p>
+      <ul style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; padding-left: 1.25rem;">
+        <li style="margin-bottom: 0.35rem;">睡在床上不是偷懒，而是精力见底时的“合法避风港”；即便失眠，只要不像从前那样陷入胡思乱想与恐慌，70%的体力依然保得住。</li><li style="margin-bottom: 0.35rem;">告别旧备忘录里的消极循环，用全新备忘录记录此刻哪怕几分钟的平静、一点点食欲或宠物的小动作。</li><li style="margin-bottom: 0.35rem;">“睡前刷牙-阅读-拉伸”和“晨起整理床铺-刷牙-陪乖乖-吃饭-拍照打卡”，让醒来后的第一件事变得简单、具体、可触摸。</li>
+      </ul>
+      <blockquote style="margin-top: 0.75rem; padding: 0.5rem 1rem; border-left: 3px solid #3f6250; background: #f0f7f3; color: #234333;">
+        🌸 温柔自问：今天早上（或下午醒来时），我完成了“晨起 5 步”里的哪一步？哪怕只有一步也值得鼓励自己。
+      </blockquote>
+    </div>
+  
+    <div class="theme-card panel" style="background: #fff; border: 1px solid #dce7f2; border-radius: 8px; padding: 1.25rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.85rem; background: #eaf1f8; color: #355F84; padding: 2px 8px; border-radius: 12px;">05 · 存在与微光</span>
+        <h3 style="margin: 0; color: #1e2a35;">独一无二的苦咖啡：允许“没那么糟，就值得过一过”</h3>
+      </div>
+      <p style="color: #355F84; font-weight: 500; margin: 0.5rem 0;">从“要么满分8分、要么归零”的执念中松绑，接纳当下的复杂与不完美，在脚下种出新的意义。</p>
+      <ul style="color: #4a5b6c; font-size: 0.95rem; line-height: 1.6; padding-left: 1.25rem;">
+        <li style="margin-bottom: 0.35rem;">过去信佛和信主时体验到的“心复苏”与真挚之爱，源于你内在的渴望、认知与外在行动达成了一致；创伤损坏的是连接通道，而非你的本质。</li><li style="margin-bottom: 0.35rem;">把“茶壶”比作生命容器：虽然有破损漏水的地方，但因为还有微小感受，证明容器并未彻底碎裂，依然可以通过微步行动一滴一滴重新加水。</li><li style="margin-bottom: 0.35rem;">不强求现在就能“恢复信心”，而是接过眼前这杯“独一无二的苦咖啡”——把目标从“完美如初”温和调低到“没那么糟，就值得继续走走看”。</li>
+      </ul>
+      <blockquote style="margin-top: 0.75rem; padding: 0.5rem 1rem; border-left: 3px solid #3f6250; background: #f0f7f3; color: #234333;">
+        🌸 温柔自问：如果暂时不去预测十年后好不好，只看今天晚上或明天，有没有一件小事让我愿意“再留下来看看风景”？
+      </blockquote>
+    </div>
+  </div>
+    </section>
+
+    <!-- Section 4: Self-Care & Grounding Toolkits -->
+    <section id="toolkit" class="section">
+      <div class="section-header">
+        <span class="label">
+          <i data-lucide="sparkles" aria-hidden="true"></i>
+          <span>随身安抚与调节工具箱</span>
+        </span>
+        <h2 class="headline headline-section">
+          在需要的时候，用身体与行动<strong>轻轻扶住自己</strong>
+        </h2>
+        <p class="prose-muted">
+          这里收录的不是空洞的鸡汤，而是我们在会谈中一起练习过、或者你自己在生活里摸索成功的调节工具。状态不好、没有耐心的时候，哪怕只做 1 分钟也没关系。
+        </p>
+      </div>
+
+      <div class="toolkit-grid">
+        <!-- Interactive Breathing Pacer -->
+        <div class="panel breathing-card">
+          <div>
+            <span class="label">
+              <i data-lucide="wind" aria-hidden="true"></i>
+              <span>会谈同款呼吸节律仪</span>
+            </span>
+            <h3 class="theme-title" style="margin-top: var(--space-xs);">慢下来，帮绷松的神经恢复弹性</h3>
+            <p class="prose-muted" style="font-size: 0.92rem; margin-top: var(--space-xs);">
+              2025年12月那次呼吸练习后，你打出了 5–6 分，说最深刻的是“宁静的感觉”。选择一种适合此刻的节律：
+            </p>
+          </div>
+
+          <div class="mode-row" role="group" aria-label="选择呼吸模式">
+            <button type="button" class="mode-chip" data-mode="428" aria-pressed="true" onclick="selectBreathMode('428')">
+              4-2-8 助眠呼吸
+            </button>
+            <button type="button" class="mode-chip" data-mode="box" aria-pressed="false" onclick="selectBreathMode('box')">
+              方块呼吸 (4-4-4-4)
+            </button>
+            <button type="button" class="mode-chip" data-mode="lake" aria-pressed="false" onclick="selectBreathMode('lake')">
+              湖面波纹呼吸
+            </button>
+          </div>
+
+          <div class="pacer-stage">
+            <div class="pacer-ring-outer" id="pacer-ring">
+              <div class="pacer-ring-inner">
+                <div class="pacer-phase-text" id="pacer-phase">准备好了吗</div>
+                <div class="pacer-count-text" id="pacer-count">4s</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-tinted" style="padding: var(--space-md);">
+            <span class="label" id="breath-tip-title">4-2-8 副交感激活法（2026.05.07 练习）</span>
+            <p class="prose-muted" id="breath-tip-body" style="font-size: 0.9rem; margin-top: 0.25rem;">
+              用鼻子轻轻吸气 4 秒，温和屏息 2 秒，再通过嘴巴缓缓吐气 8 秒。吐气拉长时，可以想象吹出一道微风，轻拂心头的不耐烦与杂念。
+            </p>
+          </div>
+
+          <div class="pacer-controls">
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+              <button type="button" class="btn btn-primary" id="breath-toggle-btn" onclick="toggleBreathing()">
+                <i data-lucide="play" aria-hidden="true"></i>
+                <span>开始呼吸练习</span>
+              </button>
+              <button type="button" class="btn" onclick="resetBreathing()">
+                <span>重置</span>
+              </button>
+            </div>
+            <span class="label" id="breath-cycles-label">已完成循环：0 轮</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Safety Island + Battery & Routine -->
+        <div class="stack-col">
+          <!-- Safety Island Protocol -->
+          <div class="panel">
+            <span class="label">
+              <i data-lucide="anchor" aria-hidden="true"></i>
+              <span>2026.10.29 已验证的“安全岛”退守方案</span>
+            </span>
+            <h3 class="theme-title" style="margin-top: var(--space-xs);">当“问题 U”或不适感突然来袭时</h3>
+            <p class="prose-muted" style="font-size: 0.92rem; margin-top: var(--space-xs);">
+              那天在整理杂物和夜里散步时，你敏锐地找到了一个无人的安全角落坐下等它平复——这证明你拥有保护自己的智慧。
+            </p>
+            <ol class="step-list" style="margin-top: var(--space-md);">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <div>
+                  <strong>退回安全角落</strong>
+                  <div class="prose-muted" style="font-size: 0.88rem;">立刻放下手头的事，找一个安静、少打扰的地方坐下，或回到家这个“核心安全岛”。</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <div>
+                  <strong>允许闭目养神</strong>
+                  <div class="prose-muted" style="font-size: 0.88rem;">不强迫自己想清楚，也不与恐怖感硬碰硬。闭上眼，只是像等阵雨过去一样静静等它退潮。</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <div>
+                  <strong>温和的身体锚点</strong>
+                  <div class="prose-muted" style="font-size: 0.88rem;">试着舌抵上颚延长呼气，或轻敲眼周与人中穴位（简化版 EFT）；哪怕只做 3 次呼吸也很好。</div>
+                </div>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <div>
+                  <strong>把事实告诉自己</strong>
+                  <div class="prose-muted" style="font-size: 0.88rem;">它现在的时长通常不超过 1 小时，不会永远持续。平复之后，我依然安全。</div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Battery, Color Wheel & Micro-Routines -->
+          <div class="panel checkin-box">
+            <div>
+              <span class="label">
+                <i data-lucide="battery-charging" aria-hidden="true"></i>
+                <span>此刻茶壶电量与微步打卡（自动保存）</span>
+              </span>
+              <h3 class="theme-title" style="margin-top: var(--space-xs);">看看今天我的身心在哪个位置</h3>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="battery-slider">
+                <span>此刻身心电量（不需要满格，如实即可）</span>
+                <span id="battery-value-display" style="color: var(--primary); font-variant-numeric: tabular-nums;">50%</span>
+              </label>
+              <input type="range" id="battery-slider" min="0" max="100" step="5" value="50" oninput="updateBatteryFromSlider(this.value)">
+              <div class="caption-sage" id="battery-hint">50% 的电量很稳当：适合照常吃饭、摸摸乖乖和灰灰。</div>
+            </div>
+
+            <div class="field-group">
+              <span class="field-label">情绪轮盘颜色感知（2026.01.09 练习）</span>
+              <div class="color-mood-row" role="group" aria-label="选择此刻内在颜色">
+                <button type="button" class="mood-pill" data-mood="green" aria-pressed="false" onclick="toggleMoodColor('green')">
+                  <span>平静绿</span>
+                </button>
+                <button type="button" class="mood-pill" data-mood="purple" aria-pressed="false" onclick="toggleMoodColor('purple')">
+                  <span>疲惫紫</span>
+                </button>
+                <button type="button" class="mood-pill" data-mood="blue" aria-pressed="false" onclick="toggleMoodColor('blue')">
+                  <span>避风蓝</span>
+                </button>
+                <button type="button" class="mood-pill" data-mood="warm" aria-pressed="false" onclick="toggleMoodColor('warm')">
+                  <span>微光暖</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="routine-grid">
+              <div>
+                <span class="label">睡前 3 件小事</span>
+                <div class="routine-list">
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-bed-1" onchange="toggleRoutine('bed1', this.checked)">
+                    <span>刷牙</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-bed-2" onchange="toggleRoutine('bed2', this.checked)">
+                    <span>安静阅读几页书</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-bed-3" onchange="toggleRoutine('bed3', this.checked)">
+                    <span>拿绳子 / 轻柔拉伸到放松</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <span class="label">晨起 5 件微步</span>
+                <div class="routine-list">
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-morn-1" onchange="toggleRoutine('morn1', this.checked)">
+                    <span>醒来后整理好床铺</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-morn-2" onchange="toggleRoutine('morn2', this.checked)">
+                    <span>刷牙洗漱</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-morn-3" onchange="toggleRoutine('morn3', this.checked)">
+                    <span>陪乖乖、灰灰或猫咪玩一会儿</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-morn-4" onchange="toggleRoutine('morn4', this.checked)">
+                    <span>认真吃点东西</span>
+                  </label>
+                  <label class="check-row">
+                    <input type="checkbox" id="chk-morn-5" onchange="toggleRoutine('morn5', this.checked)">
+                    <span>拍照或发消息给咨询师打卡</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: "此刻的我" New Memo Space -->
+    <section id="memo" class="section">
+      <div class="section-header">
+        <span class="label">
+          <i data-lucide="book-open-check" aria-hidden="true"></i>
+          <span>2026.04.02 约定的全新数字备忘录</span>
+        </span>
+        <h2 class="headline headline-section">
+          只属于<strong>“此刻的我”</strong>的温柔记录
+        </h2>
+        <p class="prose-muted">
+          在咨询中我们曾约定：把那些记录发病痛苦的旧备忘录收起来，不再反复加固痛苦的叙事。在这里，你可以写下任何碎片——不要求写得深刻，只记录此刻正在发生的真实瞬间。所有记录都会保存在你的空间里。
+        </p>
+      </div>
+
+      <div class="memo-grid">
+        <div class="panel" style="display: grid; gap: var(--space-md);">
+          <div class="field-group">
+            <span class="label">不知道写什么？点一个温柔的开头</span>
+            <div class="prompt-chips">
+              <button type="button" class="prompt-chip" onclick="useMemoPrompt(`今天乖乖 / 灰灰 / 猫咪做了一件让我觉得有意思的小事：`)">宠物互动</button>
+              <button type="button" class="prompt-chip" onclick="useMemoPrompt(`今天有一件我靠自己完成的日常小事（比如倒水、整理物品）：`)">自主小事</button>
+              <button type="button" class="prompt-chip" onclick="useMemoPrompt(`刚刚做了几分钟呼吸，感觉心里：`)">呼吸与平静</button>
+              <button type="button" class="prompt-chip" onclick="useMemoPrompt(`今天我决定先允许自己休息，不去责怪自己，因为：`)">自我接纳</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="memo-input">此刻想留给自己的话</label>
+            <textarea id="memo-input" class="textarea-field" placeholder="哪怕只有五个字也算数，比如：今天水煮鸡胸肉很好吃，或者只是在阳台吹了会儿风……"></textarea>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm);">
+            <button type="button" class="btn btn-primary" onclick="saveMemoEntry()">
+              <i data-lucide="plus" aria-hidden="true"></i>
+              <span>存进此刻备忘录</span>
+            </button>
+            <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap;">
+              <button type="button" class="btn" onclick="exportJourneyNotes()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>导出笔记</span>
+              </button>
+              <button type="button" class="btn" id="clear-memos-btn" onclick="handleClearMemos(this)">
+                <span>清空记录</span>
+              </button>
+            </div>
+          </div>
+          <div class="inline-status" id="memo-status" aria-live="polite"></div>
+        </div>
+
+        <div class="panel-tinted" style="display: grid; gap: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="label">
+              <i data-lucide="sparkles" aria-hidden="true"></i>
+              <span>最近留下的生活碎片</span>
+            </span>
+            <span class="label" id="memo-count-label">0 条记录</span>
+          </div>
+          <div class="memo-feed" id="memo-feed">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // =========================================================================
+    // 1. Grounded Source Data (Using backtick literals per defensive JS rules)
+    // =========================================================================
+    const trajectoryPoints = [
+      {
+        id: `t1`,
+        label: `25.09`,
+        date: `2025年9月10日`,
+        phase: `阶段一 · 看见与命名`,
+        mood: 0.5,
+        distress: 9.0,
+        summary: `“没有神了”：诚实说出0分与8分的巨大落差，在回忆乖乖时发现满分10分的记忆依然活着。`
+      },
+      {
+        id: `t2`,
+        label: `25.10`,
+        date: `2025年10月9日`,
+        phase: `阶段一 · 看见与命名`,
+        mood: 1.5,
+        distress: 7.5,
+        summary: `将难以言说的症状命名为“字母U”，当周评分1–2分，因为和乖乖、叮叮当当互动与吃饭还有一点感觉。`
+      },
+      {
+        id: `t3`,
+        label: `25.12`,
+        date: `2025年12月4日`,
+        phase: `阶段二 · 觉察与安放`,
+        mood: 5.5,
+        distress: 6.5,
+        summary: `在湖面波纹呼吸练习中打出5–6分，久违地体会到一丝“宁静的感觉”。`
+      },
+      {
+        id: `t4`,
+        label: `26.01`,
+        date: `2026年1月29日`,
+        phase: `阶段二 · 觉察与安放`,
+        mood: 3.5,
+        distress: 5.0,
+        summary: `住院调药与情绪轮盘练习后，整体状态从接近0分回升至3–4分，对家人和宠物保持2–3分联结。`
+      },
+      {
+        id: `t5`,
+        label: `26.04`,
+        date: `2026年4月9日`,
+        phase: `阶段三 · 节律与蓄能`,
+        mood: 4.5,
+        distress: 2.5,
+        summary: `出现“本周无发病”的关键转折，痛苦主观评分由峰值10分大幅降至2–3分。`
+      },
+      {
+        id: `t6`,
+        label: `26.05`,
+        date: `2026年5月7日`,
+        phase: `阶段三 · 节律与蓄能`,
+        mood: 5.0,
+        distress: 3.0,
+        summary: `练习4-2-8副交感神经呼吸法与中文治愈绘本，逐步打断“失眠-耗竭”恶性循环。`
+      },
+      {
+        id: `t7`,
+        label: `26.10上`,
+        date: `2026年10月2日`,
+        phase: `阶段四 · 接纳与自主`,
+        mood: 6.5,
+        distress: 2.5,
+        summary: `看到妈妈微笑与照顾乖乖、灰灰时开心达6–7分；接过属于自己独一无二的“苦咖啡”。`
+      },
+      {
+        id: `t8`,
+        label: `26.10下`,
+        date: `2026年10月29日`,
+        phase: `阶段四 · 接纳与自主`,
+        mood: 7.0,
+        distress: 1.5,
+        summary: `连续三周惊恐未发作！即便失眠体力仍可达70%，并在外出时自主完成“安全岛退守”。`
+      }
+    ];
+
+    const phaseMeta = {
+      1: {
+        name: `阶段一 · 看见与命名 (2025.09 – 2025.10)`,
+        sessions: [
+          {
+            id: `s1`,
+            date: `2025-09-10`,
+            title: `第1次 · 允许黑暗被如实说出`,
+            tag: `建立安全容器`,
+            quote: `“从8分跌到0分，感觉与神断绝了，但你还愿意让我走进你生命的低谷里。”`,
+            body: `在这场起点对话里，你没有假装坚强，而是如实表达了药物误诊与换药带来的伤害、想结束一切的绝望，以及对失去信仰光芒的哀伤。咨询师没有强行讲大道理，而是用“三天的黑暗之后会有清晨的曙光”陪你一起待在低谷里。`,
+            takeaway: `关键收获：诚实地说出“我现在没有感觉”，本身就是极高贵的真实，不再需要用伪装讨好任何人。`
+          },
+          {
+            id: `s2`,
+            date: `2025-09-25`,
+            title: `第2次 · 满分的乖乖与完好清单`,
+            tag: `发现未被摧毁的角落`,
+            quote: `“想到乖乖的时候，心情打满分（10分）。”`,
+            body: `我们一起回忆了陪伴你15年、性格内向不爱叫的狗狗“乖乖”。原来在自以为“全盘毁坏”的世界里，你依然拥有完好的视听味觉、能走路说话，依然拥有爸爸妈妈和乖乖。你的生命既有受损的地方，也同时保有很多完好的部分。`,
+            takeaway: `关键收获：坏的部分和好的部分在身体里同时存在，那10分的珍贵记忆证明你的心依然有爱的能力。`
+          },
+          {
+            id: `s3`,
+            date: `2025-10-02`,
+            title: `第3次 · 给神秘恐惧起名“字母 U”`,
+            tag: `现象外化`,
+            quote: `“既然怎么选都觉得没有意义，那我们就一起随便做各种‘毫无意义的小事’吧。”`,
+            body: `把那些突如其来、无法言说的可怕体验命名为“字母 U”（Unspeakable），让它不再是一团吞没你的黑影，而是一个可以被记录出现时间、时长和强度的对象。同时我们梳理了18–20小时的漫长睡眠节律，决定把“毫无意义的小实验”变成常态。`,
+            takeaway: `关键收获：卸下“必须有意义、必须变好”的沉重包袱，允许自己在没有动力时做一点随机小事。`
+          },
+          {
+            id: `s4`,
+            date: `2025-10-09 & 10-23`,
+            title: `第4–5次 · 叮叮当当、鸡胸肉与湖面微风`,
+            tag: `感官与呼吸唤醒`,
+            quote: `“给狗狗煮的无调料水煮鸡胸肉，我也比较喜欢那一种。”`,
+            body: `过去那一周你打出了1–2分而不是0分，因为猫咪叮叮会蹭脚打呼、当当会撞乖乖求玩，也因为对食物还有食欲。随后在第5次会谈里，我们第一次练习了“湖面波纹深呼吸”，用想象中温柔的微风轻轻安抚心里的焦躁和杂念。`,
+            takeaway: `关键收获：生活的1–2分往往就藏在宠物蹭过来的体温、一份简单的水煮鸡胸肉和一次呼气里。`
+          }
+        ]
+      },
+      2: {
+        name: `阶段二 · 觉察与安放 (2025.12 – 2026.02)`,
+        sessions: [
+          {
+            id: `s5`,
+            date: `2025-12-04 & 12-12`,
+            title: `第10–11次 · 七盏灯与五六分的宁静`,
+            tag: `注意力重建`,
+            quote: `“呼吸练习的时候，让我印象最深的是那种宁静的感觉。”`,
+            body: `你坦诚呼吸时大脑像“死机”一样很难完全跟上，但还是在当下体会到了5–6分的放松和宁静。咨询师用“大脑里的7盏注意力灯光”安慰你：哪怕现在只有一两盏灯亮着，也足够照见一点平静。紧接着的下一次会谈，你主动问起：“可以聊一聊你吗？”——这是对外界好奇与联结的萌芽。`,
+            takeaway: `关键收获：哪怕大脑只跟上了一小半，宁静感依然真实发生过；主动关心他人，意味着关系之门打开了一道缝。`
+          },
+          {
+            id: `s6`,
+            date: `2025-12-25`,
+            title: `第12次 · 情绪轮盘与“不去想它，它便退去”`,
+            tag: `认知解离`,
+            quote: `“如果去想它、找它，就会出来一点；现在没有去想它的话，就没有。”`,
+            body: `借助情绪轮盘的图片，你一点点定位了发作时的感受（冷淡、悲伤与恐惧）。更重要的发现是：恐惧在很大程度上依赖注意力的喂养；当你把目光从“寻找恐惧”移开时，它并不会自动占满全部生活。`,
+            takeaway: `关键收获：学会分辨“思考时的思维僵木”与“环境里的安全感”，不主动喂养恐惧。`
+          },
+          {
+            id: `s7`,
+            date: `2026-01-09 & 01-15`,
+            title: `第13–14次 · 绿色平静、紫色疲惫与自助呼吸`,
+            tag: `自我调动能力`,
+            quote: `“就是发病的时候，我自己想起了做呼吸练习。”`,
+            body: `在等待住院调药的阶段里，你第一次在发病时主动调动意识做起了呼吸练习——即便觉得“只做了一会儿、没有耐心”，这也标志着你不再完全被动挨打。我们还学了简化版眼周/人中敲击释放法，学会给此刻涂上“2–3分的绿色平静”与“一点紫色疲惫”，把手放在心口对自己说“愿你平安、健康、快乐”。`,
+            takeaway: `关键收获：在风暴中间能想起呼吸，就是非常了不起的主动力量；平静与疲惫可以和平共处。`
+          },
+          {
+            id: `s8`,
+            date: `2026-01-29 ~ 02-26`,
+            title: `第16–20次 · 状态回升至3–4分与当当的拥抱`,
+            tag: `康复趋势显现`,
+            quote: `“我回家之后，当当居然弓着背来蹭我，它平时都不那样的！”`,
+            body: `调药与咨询推进后，整体情绪状态从近0分回升到最高3–4分，使用“冥想星球”配合日常呼吸。2月的一次线下见面后，你开心地对老师说“看到你就很开心”，回家后连平时高冷的猫咪当当都主动弓背蹭你——动物总能最敏锐地感受到人身上那股松弛下来的善意。`,
+            takeaway: `关键收获：没有人能把人“变回过去的样子”，但新的连接与喜悦正在今天的土壤里重新长出来。`
+          }
+        ]
+      },
+      3: {
+        name: `阶段三 · 节律与蓄能 (2026.03 – 2026.05)`,
+        sessions: [
+          {
+            id: `s9`,
+            date: `2026-03-23`,
+            title: `孙医生联合评估 · 语言与思维的显著提速`,
+            tag: `神经通路唤醒`,
+            quote: `“我现在跟你沟通，感觉你的思维反应速度比以前明显快了，语言表达流畅了。”`,
+            body: `久未联系的孙医生一眼看出了你的进步：语速、逻辑和自我表达能力比半年前清晰了许多，这说明大脑完全具备重塑与对话的条件。医生与天义老师决定一起通过你曾经热爱的英语、小说与记忆，温和地唤醒那些休眠的神经通路。`,
+            takeaway: `关键收获：旁人清晰可见的进步是客观事实——你的认知与表达功能正在扎实恢复。`
+          },
+          {
+            id: `s10`,
+            date: `2026-04-02`,
+            title: `第L03次 · 发作骤减与启用全新数字备忘录`,
+            tag: `阻断病理循环`,
+            quote: `“去年高频持久的发作，今年降到有时一周无发，持续时间也缩到了30–60分钟。”`,
+            body: `这是极其鼓舞人心的转折点。为了赴福建行程做准备，我们商定了每日遛乖乖、每日读一点英文提一个小问题，以及最关键的一步：把写满痛苦回忆的旧手机备忘录收起来，开启一份“此刻的我”专属新备忘录，停止让旧文字反复强化病态认同。`,
+            takeaway: `关键收获：隔离旧叙事、用“遛狗+阅读+新书写”三个微小锚点重新托住白天的时间。`
+          },
+          {
+            id: `s11`,
+            date: `2026-04-09`,
+            title: `第L04次 · 零发作的一周与“意义在脚下”`,
+            tag: `人生得失重构`,
+            quote: `“主评痛苦从峰值10分降到了2–3分，本周没有任何发病情况。”`,
+            body: `通过共同梳理“人生得失日历”，你看见了小学阶段和五年前两次“失去光明”的螺旋轨迹，也更清晰地盘点了父母之爱、工友与幼时伙伴、乖乖曾带给你的滋养。与其执着于“宏大救赎会不会瞬间降临”，不如先悬置判断，在尘埃般微小的日常里用行动去试探水温的冷暖。`,
+            takeaway: `关键收获：意义不在远方的神迹里，而在脚下每一件“正在做着的小事”中慢慢渗出。`
+          },
+          {
+            id: `s12`,
+            date: `2026-04-23 ~ 05-07`,
+            title: `第L06–L08次 · 茶壶生命力模型与4-2-8呼吸`,
+            tag: `具身修复`,
+            quote: `“创伤破坏的是‘连接能力’和茶壶上的缺口，而不是你生命的本质。”`,
+            body: `我们一起画出了“茶壶模型”：运动、祷告、与宠物相处是在加水，而药物冲击与创伤是漏水口。因为你对叮叮当当还有微弱感觉，证明你的茶壶并没有碎掉！针对严重失眠，咨询师没有强迫你做复杂任务，而是共同选定了最低门槛的“4-2-8 呼吸法”和干净治愈的中文儿童绘本，帮紧张的神经系统慢慢回弹。`,
+            takeaway: `关键收获：接纳修复是渐进的神经可塑性过程，睡前只做力所能及的 4-2-8 呼吸就是胜利。`
+          }
+        ]
+      },
+      4: {
+        name: `阶段四 · 接纳与自主 (2026.09 – 2026.11)`,
+        sessions: [
+          {
+            id: `s13`,
+            date: `2026-09-25 & 10-02`,
+            title: `复盘与第2次 · “独一无二的苦咖啡”`,
+            tag: `存在接纳`,
+            quote: `“看到我妈妈笑就会心里好一点，还有乖乖和灰灰特别活泼……开心能有6–7分。”`,
+            body: `停询后重新连线，你的发病时长已从过去的“一通宵”缩减到“顶多1小时”。面对依然会冒出的悲伤与无力，你列出“以何为乐”与“以何为苦”，也探讨了将来去做不需要太多社交的烘焙工作（状态好烤一个面包，累了就休息）。咨询师送给你一个隐喻：命运递给你这杯“独一无二的苦咖啡”，倒掉还是端起，选择权在你手里。`,
+            takeaway: `关键收获：痛苦想哭喊并不是“疯了”，而是正常的情绪需要出口；目标定为“没那么糟，就值得过一过的人生”。`
+          },
+          {
+            id: `s14`,
+            date: `2026-10-16 & 10-23`,
+            title: `第4–5次 · 连续三周稳态与“卧床避风港”`,
+            tag: `去病理化照护`,
+            quote: `“连续第三周惊恐没有发作，每天坚持耐心地训练高能量幼犬灰灰。”`,
+            body: `新成员幼犬“灰灰”的到来让家里热闹了起来。面对醒来后偶尔泛起的空虚枯燥感，咨询师把“赖在床上”彻底去病理化：那不是颓废，而是身心耗竭时的自我保护“避风港”。同时打通手环睡眠数据共享，用客观数据陪伴你看到正在发生的变化。`,
+            takeaway: `关键收获：学会允许低能量期的存在，不把“想躺着”当成道德或人格的失败。`
+          },
+          {
+            id: `s15`,
+            date: `2026-10-29`,
+            title: `第6次 · 70%体力、安全岛智慧与方块呼吸`,
+            tag: `自主调节里程碑`,
+            quote: `“哪怕前夜失眠，白天精力居然还有70%，并在散步出现异样时自己找安静地方坐下平复。”`,
+            body: `这是极具里程碑意义的一次飞跃：失眠不再等同于精神崩溃。在整理杂物和夜里散步时感到轻微异样，你没有慌乱逃跑，而是自己找到无人安静的地方坐下闭眼等待平复——这正是“安全岛自主退守能力”的成熟！现场还一起演练了方块呼吸（4-4-4-4）、舌抵上颚呼气与八段锦微步练习。`,
+            takeaway: `关键收获：你已经亲手掌握了“在风浪出现时给自己搭一个安全岛”的能力。`
+          },
+          {
+            id: `s16`,
+            date: `2026-11-07 & 近期方案`,
+            title: `第7次与最新计划 · 边界独立与晨昏微步`,
+            tag: `成年自主权`,
+            quote: `“先从自己倒水、自己整理衣物开始负责——照顾好自己，是未来帮助别人的起点。”`,
+            body: `我们把目光转向家庭日常里的自主权：与妈妈温柔沟通，把个人饮水、整理衣物与出行物品交还给你自己打理，因为新鲜的小挑战才能带来真实的情绪涟漪和胜任感。最新落地的“睡前3件事（刷牙、阅读、拉伸）”与“晨起5件事（铺床、刷牙、陪乖乖、吃饭、拍照打卡）”，正一步步把安稳变成每天醒来后的习惯。`,
+            takeaway: `关键收获：自主管理自己的生活细节，就是为未来独立生活与参与社会攒下的第一份底气。`
+          }
+        ]
+      }
+    };
+
+    const thematicData = [
+      {
+        id: `th1`,
+        badge: `情绪与躯体`,
+        tagClass: ``,
+        title: `与“字母 U”相处：从被吞没到自主退守`,
+        summary: `把无法言说的不适感外化为“问题 U”，学会不与恐惧硬碰硬，而是用安全岛、呼吸与颜色标记温柔托住自己。`,
+        points: [
+          `你发现“不去故意想它、找它时，它就不会主动出来”，说明注意力在哪里，感受就会在哪里放大。`,
+          `发作频率已从高频通宵缩短至 30–60 分钟，甚至达到过“连续 3 周未发作”；痛苦峰值从 10 分回落到 2–3 分。`,
+          `想喊、想哭不是“疯了”，恰恰说明你压抑了太久的情绪需要健康的出口；你能够克制不吓到妈妈和小狗，本身就证明你的理智非常稳固。`
+        ],
+        prompt: `温柔自问：下次再有不舒服的苗头时，我可不可以像 10月29日那样，先找个安静的地方坐下来，闭上眼等这阵风自己过去？`
+      },
+      {
+        id: `th2`,
+        badge: `宠物与连接`,
+        tagClass: `tag-sage`,
+        title: `乖乖、灰灰与叮叮当当：它们是你心里的光`,
+        summary: `在最觉得“与世界格格不入”的时刻，动物伙伴们用最纯粹的方式证明：你依然有爱，也依然被爱着。`,
+        points: [
+          `15 岁的老犬乖乖是你心底满分的快乐源泉——性格文静、听得懂家乡话，甚至连爱吃无调料水煮鸡胸肉的喜好都和你一样。`,
+          `小猫叮叮每天会用身子蹭你的脚、倒在地上打呼噜；连高冷的当当都在一次线下咨询后破天荒地弓背来蹭你。`,
+          `精力十足的小狗灰灰带来了拔河和排便训练的小挑战，每天耐心训练它的过程，正在悄然拉回你对现实生活的掌控感。`
+        ],
+        prompt: `温柔自问：今天如果只做一件和它们有关的小事（摸一摸耳朵、看它们打个盹），我会觉得心里暖一点点吗？`
+      },
+      {
+        id: `th3`,
+        badge: `边界与胜任`,
+        tagClass: ``,
+        title: `拿回日常的小事权：从“自己倒水”开始独立`,
+        summary: `减少“被全盘包办”的无力感，把日常起居的一小块领地交还给自己，是重建成人胜任感的第一步。`,
+        points: [
+          `当生活里所有事都被照顾得滴水不漏时，人反而容易因为缺乏“自己能做到的新鲜挑战”而陷入平淡与冷漠。`,
+          `你完全有独立管理金钱、照顾自己（甚至以前在外独自生活）的能力，只是和家人同住后被过度保护掩盖了。`,
+          `和妈妈达成的小契约：衣物整理、出行打包、自己倒水，由你亲自负责；未来即使找工作，也可以优先选择低社交压力的烘焙或手作岗位，累了就休息。`
+        ],
+        prompt: `温柔自问：今天在家里，有哪一件原本妈妈会代劳的小事，我想试试由我自己来完成？`
+      },
+      {
+        id: `th4`,
+        badge: `微步与节律`,
+        tagClass: `tag-sage`,
+        title: `睡前 3 步与晨起 5 步：不做宏大计划，只做这一刻`,
+        summary: `不要求一夜回到正常作息，把白天的“发呆空白”变成“新备忘录的温柔书写”，用可视化流程降低行动门槛。`,
+        points: [
+          `睡在床上不是偷懒，而是精力见底时的“合法避风港”；即便失眠，只要不像从前那样陷入胡思乱想与恐慌，70%的体力依然保得住。`,
+          `告别旧备忘录里的消极循环，用全新备忘录记录此刻哪怕几分钟的平静、一点点食欲或宠物的小动作。`,
+          `“睡前刷牙-阅读-拉伸”和“晨起整理床铺-刷牙-陪乖乖-吃饭-拍照打卡”，让醒来后的第一件事变得简单、具体、可触摸。`
+        ],
+        prompt: `温柔自问：今天早上（或下午醒来时），我完成了“晨起 5 步”里的哪一步？哪怕只有一步也值得鼓励自己。`
+      },
+      {
+        id: `th5`,
+        badge: `存在与微光`,
+        tagClass: `tag-warm`,
+        title: `独一无二的苦咖啡：允许“没那么糟，就值得过一过”`,
+        summary: `从“要么满分8分、要么归零”的执念中松绑，接纳当下的复杂与不完美，在脚下种出新的意义。`,
+        points: [
+          `过去信佛和信主时体验到的“心复苏”与真挚之爱，源于你内在的渴望、认知与外在行动达成了一致；创伤损坏的是连接通道，而非你的本质。`,
+          `把“茶壶”比作生命容器：虽然有破损漏水的地方，但因为还有微小感受，证明容器并未彻底碎裂，依然可以通过微步行动一滴一滴重新加水。`,
+          `不强求现在就能“恢复信心”，而是接过眼前这杯“独一无二的苦咖啡”——把目标从“完美如初”温和调低到“没那么糟，就值得继续走走看”。`
+        ],
+        prompt: `温柔自问：如果暂时不去预测十年后好不好，只看今天晚上或明天，有没有一件小事让我愿意“再留下来看看风景”？`
+      }
+    ];
+
+    const breathModes = {
+      '428': {
+        title: `4-2-8 副交感激活法（2026.05.07 练习）`,
+        body: `用鼻子轻轻吸气 4 秒，温和屏息 2 秒，再通过嘴巴缓缓吐气 8 秒。吐气拉长时，可以想象吹出一道微风，轻拂心头的不耐烦与杂念。`,
+        steps: [
+          { label: `鼻子吸气`, sec: 4, scale: 1.15 },
+          { label: `温和屏息`, sec: 2, scale: 1.15 },
+          { label: `嘴巴慢吐`, sec: 8, scale: 0.82 }
+        ]
+      },
+      'box': {
+        title: `方块呼吸法 4-4-4-4（2026.10.29 练习）`,
+        body: `舌尖轻抵上颚，均匀吸气 4 秒、停留 4 秒、呼气 4 秒、再停留 4 秒。像画一个平稳的正方形，帮睡前的思绪慢慢降落。`,
+        steps: [
+          { label: `平稳吸气`, sec: 4, scale: 1.15 },
+          { label: `轻柔停留`, sec: 4, scale: 1.15 },
+          { label: `缓缓呼气`, sec: 4, scale: 0.82 },
+          { label: `安静停顿`, sec: 4, scale: 0.82 }
+        ]
+      },
+      'lake': {
+        title: `湖面波纹与微风练习（2025.10.23 练习）`,
+        body: `吸气 5 秒时，想象平静的湖面荡起一层温柔波纹；吐气 6 秒时，感受波纹慢慢落下，微风轻拂掉脑海里的烦躁与疲惫。`,
+        steps: [
+          { label: `波纹升起 · 吸气`, sec: 5, scale: 1.15 },
+          { label: `微风落下 · 呼气`, sec: 6, scale: 0.82 }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 2. Persistent App State (via notebookAppApi)
+    // =========================================================================
+    let appState = {
+      selectedPhase: 4,
+      selectedSessionId: `s16`,
+      resonatedSessions: [],
+      battery: 50,
+      moodColor: `green`,
+      routines: {
+        bed1: false, bed2: false, bed3: false,
+        morn1: false, morn2: false, morn3: false, morn4: false, morn5: false
+      },
+      memos: [],
+      breathCycles: 0
+    };
+
+    async function persistState() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState(appState);
+        }
+      } catch (err) {
+        // Silently degrade if host bridge unavailable
+      }
+    }
+
+    // =========================================================================
+    // 3. Trajectory Chart Rendering & Interaction
+    // =========================================================================
+    function renderTrajectoryChart() {
+      const pathsG = document.getElementById(`chart-paths`);
+      const nodesG = document.getElementById(`chart-nodes`);
+      const labelsG = document.getElementById(`chart-x-labels`);
+      if (!pathsG || !nodesG || !labelsG) return;
+
+      const xStart = 76;
+      const xEnd = 768;
+      const yTop = 30;
+      const yBottom = 250;
+      const n = trajectoryPoints.length;
+
+      function getX(idx) {
+        return xStart + (idx * (xEnd - xStart)) / (n - 1);
+      }
+      function getY(val) {
+        return yBottom - (val / 10) * (yBottom - yTop);
+      }
+
+      let moodPath = ``;
+      let distressPath = ``;
+      let nodesHtml = ``;
+      let labelsHtml = ``;
+
+      trajectoryPoints.forEach((pt, idx) => {
+        const cx = getX(idx);
+        const cyMood = getY(pt.mood);
+        const cyDist = getY(pt.distress);
+
+        moodPath += (idx === 0 ? `M ` : ` L `) + `${cx.toFixed(1)} ${cyMood.toFixed(1)}`;
+        distressPath += (idx === 0 ? `M ` : ` L `) + `${cx.toFixed(1)} ${cyDist.toFixed(1)}`;
+
+        labelsHtml += `<text x="${cx.toFixed(1)}" y="272" text-anchor="middle" fill="var(--on-surface-variant)" font-size="11">${pt.label}</text>`;
+
+        // Direct annotation on key turning points
+        if (idx === 0) {
+          labelsHtml += `<text x="${cx + 8}" y="${cyDist - 10}" fill="var(--data-4)" font-size="11" font-weight="600">初期痛苦峰值 9–10分</text>`;
+        } else if (idx === 4) {
+          labelsHtml += `<text x="${cx}" y="${cyDist + 20}" text-anchor="middle" fill="var(--data-4)" font-size="11" font-weight="600">4月发作骤降 (2–3分)</text>`;
+        } else if (idx === 7) {
+          labelsHtml += `<text x="${cx - 6}" y="${cyMood - 12}" text-anchor="end" fill="var(--data-1)" font-size="11" font-weight="600">6–7分 开心时刻</text>`;
+        }
+
+        nodesHtml += `
+          <g class="chart-point-btn" role="button" tabindex="0" aria-label="${pt.date} 状态节点" onclick="selectChartPoint('${pt.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectChartPoint('${pt.id}');}">
+            <line x1="${cx.toFixed(1)}" y1="30" x2="${cx.toFixed(1)}" y2="250" stroke="transparent" stroke-width="24"></line>
+            <circle cx="${cx.toFixed(1)}" cy="${cyDist.toFixed(1)}" r="5" fill="var(--surface-container-low)" stroke="var(--data-4)" stroke-width="2.2"></circle>
+            <circle cx="${cx.toFixed(1)}" cy="${cyMood.toFixed(1)}" r="6" fill="var(--data-1)" stroke="var(--surface-container-low)" stroke-width="2"></circle>
+          </g>
+        `;
+      });
+
+      pathsG.innerHTML = `
+        <path d="${distressPath}" fill="none" stroke="var(--data-4)" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="${moodPath}" fill="none" stroke="var(--data-1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      `;
+      nodesG.innerHTML = nodesHtml;
+      labelsG.innerHTML = labelsHtml;
+    }
+
+    function selectChartPoint(pointId) {
+      const pt = trajectoryPoints.find((item) => item.id === pointId);
+      if (!pt) return;
+      const dateEl = document.getElementById(`chart-readout-date`);
+      const textEl = document.getElementById(`chart-readout-text`);
+      const badgeEl = document.getElementById(`chart-readout-badge`);
+      if (dateEl) dateEl.textContent = `${pt.date} · 会谈状态切片（平静/开心 ${pt.mood} 分 · 痛苦冲击 ${pt.distress} 分）`;
+      if (textEl) textEl.textContent = pt.summary;
+      if (badgeEl) badgeEl.textContent = pt.phase;
+    }
+
+    // =========================================================================
+    // 4. Counseling Journey Timeline Explorer
+    // =========================================================================
+    function selectPhase(phaseNum) {
+      appState.selectedPhase = phaseNum;
+      const phaseData = phaseMeta[phaseNum];
+      if (!phaseData) return;
+
+      document.querySelectorAll(`.phase-btn`).forEach((btn) => {
+        btn.setAttribute(`aria-pressed`, Number(btn.dataset.phase) === phaseNum ? `true` : `false`);
+      });
+
+      const firstSession = phaseData.sessions[0];
+      if (firstSession) {
+        const existsInPhase = phaseData.sessions.some((s) => s.id === appState.selectedSessionId);
+        if (!existsInPhase) {
+          appState.selectedSessionId = firstSession.id;
+        }
+      }
+      renderTimeline();
+      persistState();
+    }
+
+    function selectSession(sessionId) {
+      appState.selectedSessionId = sessionId;
+      renderTimeline();
+      persistState();
+    }
+
+    function toggleResonance(sessionId) {
+      const idx = appState.resonatedSessions.indexOf(sessionId);
+      if (idx === -1) {
+        appState.resonatedSessions.push(sessionId);
+      } else {
+        appState.resonatedSessions.splice(idx, 1);
+      }
+      renderTimeline();
+      persistState();
+    }
+
+    function renderTimeline() {
+      const phaseData = phaseMeta[appState.selectedPhase] || phaseMeta[4];
+      const labelEl = document.getElementById(`phase-summary-label`);
+      const listEl = document.getElementById(`session-list`);
+      const detailEl = document.getElementById(`session-detail`);
+      if (!listEl || !detailEl) return;
+
+      if (labelEl) labelEl.textContent = phaseData.name;
+
+      let listHtml = ``;
+      phaseData.sessions.forEach((s) => {
+        const selected = s.id === appState.selectedSessionId;
+        const resonated = appState.resonatedSessions.includes(s.id);
+        listHtml += `
+          <button type="button" class="session-item" role="option" aria-selected="${selected ? `true` : `false`}" onclick="selectSession('${s.id}')">
+            <div class="session-item-meta">
+              <span>${s.date}</span>
+              <span>${resonated ? `已标记共鸣` : s.tag}</span>
+            </div>
+            <div class="session-item-title">${s.title}</div>
+          </button>
+        `;
+      });
+      listEl.innerHTML = listHtml;
+
+      const current = phaseData.sessions.find((s) => s.id === appState.selectedSessionId) || phaseData.sessions[0];
+      if (!current) return;
+      const isResonated = appState.resonatedSessions.includes(current.id);
+
+      detailEl.innerHTML = `
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm);">
+          <span class="label">${current.date}</span>
+          <span class="tag">${current.tag}</span>
+        </div>
+        <h3 class="theme-title" style="font-size: 1.25rem;">${current.title}</h3>
+        <div class="detail-quote">${current.quote}</div>
+        <p class="prose">${current.body}</p>
+        <div class="panel-tinted" style="padding: var(--space-md);">
+          <div class="caption-sage" style="margin-top: 0;">${current.takeaway}</div>
+        </div>
+        <div class="detail-footer">
+          <span class="label">如果这段对话让你觉得被看见了，可以轻轻点亮它：</span>
+          <button type="button" class="btn ${isResonated ? `btn-primary` : ``}" onclick="toggleResonance('${current.id}')">
+            <i data-lucide="heart" aria-hidden="true"></i>
+            <span>${isResonated ? `已标记：我有共鸣` : `读到这里，我有共鸣`}</span>
+          </button>
+        </div>
+      `;
+      refreshIcons();
+    }
+
+    // =========================================================================
+    // 5. Thematic Reflections Explorer
+    // =========================================================================
+    function renderThemes() {
+      const grid = document.getElementById(`theme-grid`);
+      if (!grid) return;
+
+      let html = ``;
+      thematicData.forEach((th, idx) => {
+        const pointsHtml = th.points.map((p) => `<li>${p}</li>`).join(``);
+        html += `
+          <article class="panel theme-card">
+            <div class="theme-card-head">
+              <span class="tag ${th.tagClass}">${th.badge}</span>
+              <span class="label">0${idx + 1}</span>
+            </div>
+            <h3 class="theme-title">${th.title}</h3>
+            <p class="prose-muted" style="font-size: 0.94rem;">${th.summary}</p>
+            <div>
+              <button type="button" class="btn" id="theme-btn-${th.id}" aria-expanded="false" aria-controls="theme-body-${th.id}" onclick="toggleThemeCard('${th.id}')">
+                <span>展开深入理解</span>
+              </button>
+            </div>
+            <div class="theme-details" id="theme-body-${th.id}" hidden>
+              <ul style="margin: 0; padding-left: 1.2rem; display: grid; gap: 0.45rem; font-size: 0.92rem; color: var(--on-surface);">
+                ${pointsHtml}
+              </ul>
+              <div class="panel-tinted" style="padding: var(--space-sm) var(--space-md); margin-top: var(--space-xs);">
+                <div class="caption-sage" style="margin-top: 0;">${th.prompt}</div>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+      grid.innerHTML = html;
+    }
+
+    function toggleThemeCard(themeId) {
+      const body = document.getElementById(`theme-body-${themeId}`);
+      const btn = document.getElementById(`theme-btn-${themeId}`);
+      if (!body || !btn) return;
+      const isHidden = body.hasAttribute(`hidden`);
+      if (isHidden) {
+        body.removeAttribute(`hidden`);
+        btn.setAttribute(`aria-expanded`, `true`);
+        btn.innerHTML = `<span>收起细节</span>`;
+      } else {
+        body.setAttribute(`hidden`, ``);
+        btn.setAttribute(`aria-expanded`, `false`);
+        btn.innerHTML = `<span>展开深入理解</span>`;
+      }
+    }
+
+    // =========================================================================
+    // 6. Interactive Breathing Pacer
+    // =========================================================================
+    let currentBreathMode = `428`;
+    let breathTimer = null;
+    let isBreathing = false;
+    let stepIndex = 0;
+    let secRemaining = 4;
+
+    function selectBreathMode(modeKey) {
+      if (!breathModes[modeKey]) return;
+      stopBreathingLoop();
+      currentBreathMode = modeKey;
+
+      document.querySelectorAll(`.mode-chip`).forEach((chip) => {
+        chip.setAttribute(`aria-pressed`, chip.dataset.mode === modeKey ? `true` : `false`);
+      });
+
+      const cfg = breathModes[modeKey];
+      const titleEl = document.getElementById(`breath-tip-title`);
+      const bodyEl = document.getElementById(`breath-tip-body`);
+      const phaseEl = document.getElementById(`pacer-phase`);
+      const countEl = document.getElementById(`pacer-count`);
+      const ringEl = document.getElementById(`pacer-ring`);
+
+      if (titleEl) titleEl.textContent = cfg.title;
+      if (bodyEl) bodyEl.textContent = cfg.body;
+      if (phaseEl) phaseEl.textContent = `准备好了吗`;
+      if (countEl) countEl.textContent = `${cfg.steps[0].sec}s`;
+      if (ringEl) ringEl.style.transform = `scale(0.84)`;
+    }
+
+    function toggleBreathing() {
+      if (isBreathing) {
+        stopBreathingLoop();
+      } else {
+        startBreathingLoop();
+      }
+    }
+
+    function startBreathingLoop() {
+      const cfg = breathModes[currentBreathMode];
+      if (!cfg) return;
+      isBreathing = true;
+      stepIndex = 0;
+      secRemaining = cfg.steps[0].sec;
+
+      const btn = document.getElementById(`breath-toggle-btn`);
+      if (btn) {
+        btn.innerHTML = `<i data-lucide="pause" aria-hidden="true"></i><span>暂停练习</span>`;
+        refreshIcons();
+      }
+
+      applyBreathVisual();
+      breathTimer = setInterval(() => {
+        secRemaining -= 1;
+        if (secRemaining <= 0) {
+          stepIndex += 1;
+          if (stepIndex >= cfg.steps.length) {
+            stepIndex = 0;
+            appState.breathCycles += 1;
+            const cycEl = document.getElementById(`breath-cycles-label`);
+            if (cycEl) cycEl.textContent = `已完成循环：${appState.breathCycles} 轮`;
+            persistState();
+          }
+          secRemaining = cfg.steps[stepIndex].sec;
+        }
+        applyBreathVisual();
+      }, 1000);
+    }
+
+    function applyBreathVisual() {
+      const cfg = breathModes[currentBreathMode];
+      const step = cfg.steps[stepIndex];
+      const phaseEl = document.getElementById(`pacer-phase`);
+      const countEl = document.getElementById(`pacer-count`);
+      const ringEl = document.getElementById(`pacer-ring`);
+
+      if (phaseEl) phaseEl.textContent = step.label;
+      if (countEl) countEl.textContent = `${secRemaining}s`;
+      if (ringEl) ringEl.style.transform = `scale(${step.scale})`;
+    }
+
+    function stopBreathingLoop() {
+      isBreathing = false;
+      if (breathTimer) {
+        clearInterval(breathTimer);
+        breathTimer = null;
+      }
+      const btn = document.getElementById(`breath-toggle-btn`);
+      if (btn) {
+        btn.innerHTML = `<i data-lucide="play" aria-hidden="true"></i><span>开始呼吸练习</span>`;
+        refreshIcons();
+      }
+    }
+
+    function resetBreathing() {
+      stopBreathingLoop();
+      selectBreathMode(currentBreathMode);
+    }
+
+    // =========================================================================
+    // 7. Battery, Mood Colors & Daily Routines
+    // =========================================================================
+    function updateBatteryFromSlider(val) {
+      const num = Number(val);
+      appState.battery = num;
+      renderBatteryUI();
+      persistState();
+    }
+
+    function renderBatteryUI() {
+      const slider = document.getElementById(`battery-slider`);
+      const display = document.getElementById(`battery-value-display`);
+      const hint = document.getElementById(`battery-hint`);
+      if (slider) slider.value = appState.battery;
+      if (display) display.textContent = `${appState.battery}%`;
+      if (hint) {
+        if (appState.battery <= 20) {
+          hint.textContent = `电量偏低（${appState.battery}%）：允许自己回到“避风港”休息，不勉强自己，先喝口温水。`;
+        } else if (appState.battery <= 55) {
+          hint.textContent = `电量平稳（${appState.battery}%）：适合做一点点不费力的小事，比如摸摸乖乖和灰灰，或自己倒杯水。`;
+        } else {
+          hint.textContent = `电量充沛（${appState.battery}%）：状态真不错！可以去遛一次乖乖，或者自己整理一下桌面与衣物。`;
+        }
+      }
+    }
+
+    function toggleMoodColor(colorKey) {
+      appState.moodColor = colorKey;
+      renderMoodPills();
+      persistState();
+    }
+
+    function renderMoodPills() {
+      document.querySelectorAll(`.mood-pill`).forEach((pill) => {
+        pill.setAttribute(`aria-pressed`, pill.dataset.mood === appState.moodColor ? `true` : `false`);
+      });
+    }
+
+    function toggleRoutine(key, checked) {
+      appState.routines[key] = Boolean(checked);
+      persistState();
+    }
+
+    function renderRoutines() {
+      const mapIds = {
+        bed1: `chk-bed-1`, bed2: `chk-bed-2`, bed3: `chk-bed-3`,
+        morn1: `chk-morn-1`, morn2: `chk-morn-2`, morn3: `chk-morn-3`, morn4: `chk-morn-4`, morn5: `chk-morn-5`
+      };
+      Object.keys(mapIds).forEach((k) => {
+        const el = document.getElementById(mapIds[k]);
+        if (el) el.checked = Boolean(appState.routines[k]);
+      });
+    }
+
+    // =========================================================================
+    // 8. "此刻的我" New Memo Space
+    // =========================================================================
+    function useMemoPrompt(promptText) {
+      const input = document.getElementById(`memo-input`);
+      if (!input) return;
+      input.value = promptText;
+      input.focus();
+    }
+
+    function saveMemoEntry() {
+      const input = document.getElementById(`memo-input`);
+      const status = document.getElementById(`memo-status`);
+      if (!input) return;
+
+      const text = input.value.trim();
+      if (!text) {
+        if (status) {
+          status.textContent = `写下哪怕几个字再保存吧，例如今天的心情颜色或一件小事。`;
+          status.classList.add(`inline-error`);
+        }
+        return;
+      }
+
+      const now = new Date();
+      const stamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, `0`)}-${String(now.getDate()).padStart(2, `0`)} ${String(now.getHours()).padStart(2, `0`)}:${String(now.getMinutes()).padStart(2, `0`)}`;
+
+      const moodLabels = {
+        green: `平静绿`,
+        purple: `疲惫紫`,
+        blue: `避风蓝`,
+        warm: `微光暖`
+      };
+
+      appState.memos.unshift({
+        id: `m_${Date.now()}`,
+        time: stamp,
+        battery: appState.battery,
+        mood: moodLabels[appState.moodColor] || `平静绿`,
+        text: text
+      });
+
+      input.value = ``;
+      if (status) {
+        status.classList.remove(`inline-error`);
+        status.textContent = `已温柔保存进“此刻的我”备忘录。`;
+      }
+      renderMemos();
+      persistState();
+    }
+
+    function deleteMemoEntry(memoId) {
+      appState.memos = appState.memos.filter((m) => m.id !== memoId);
+      renderMemos();
+      persistState();
+    }
+
+    function handleClearMemos(btn) {
+      const status = document.getElementById(`memo-status`);
+      if (appState.memos.length === 0) {
+        if (status) status.textContent = `目前还没有需要清空的记录。`;
+        return;
+      }
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `再点一次确认清空`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.textContent = `清空记录`;
+      appState.memos = [];
+      if (status) {
+        status.classList.remove(`inline-error`);
+        status.textContent = `已清空备忘录记录。`;
+      }
+      renderMemos();
+      persistState();
+    }
+
+    function renderMemos() {
+      const feed = document.getElementById(`memo-feed`);
+      const countEl = document.getElementById(`memo-count-label`);
+      if (!feed) return;
+
+      if (countEl) countEl.textContent = `${appState.memos.length} 条记录`;
+
+      if (appState.memos.length === 0) {
+        feed.innerHTML = `
+          <div class="memo-entry" style="background: var(--surface-container-low);">
+            <div style="font-weight: 500; color: var(--on-surface);">这里还空着，正等着“此刻的你”落笔</div>
+            <p class="prose-muted" style="font-size: 0.9rem;">
+              2026年4月的会谈里我们曾约定：只在这里写“当下的真实小事”，把旧的痛苦记录先放一旁。哪怕写一句“今天太阳晒在阳台很舒服”，就已经很棒了。
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = ``;
+      appState.memos.forEach((m) => {
+        const safeText = m.text
+          .replace(/&/g, `&amp;`)
+          .replace(/</g, `&lt;`)
+          .replace(/>/g, `&gt;`);
+        html += `
+          <div class="memo-entry">
+            <div class="memo-entry-head">
+              <span class="label">${m.time} · 电量 ${m.battery}% · ${m.mood}</span>
+              <button type="button" class="btn btn-ghost" style="min-height: 34px; padding: 0 0.5rem; font-size: 0.8rem;" onclick="deleteMemoEntry('${m.id}')">删除</button>
+            </div>
+            <div style="white-space: pre-wrap; color: var(--on-surface); font-size: 0.96rem;">${safeText}</div>
+          </div>
+        `;
+      });
+      feed.innerHTML = html;
+    }
+
+    function exportJourneyNotes() {
+      const status = document.getElementById(`memo-status`);
+      const lines = [
+        `雨卉的心灵避风港 · 此刻备忘录导出`,
+        `====================================`,
+        `当前电量记录：${appState.battery}%`,
+        `呼吸循环累计：${appState.breathCycles} 轮`,
+        `已标记共鸣的咨询里程碑：${appState.resonatedSessions.length} 个`,
+        ``,
+        `--- 此刻的生活碎片 ---`
+      ];
+
+      if (appState.memos.length === 0) {
+        lines.push(`（暂无备忘录文本记录）`);
+      } else {
+        appState.memos.forEach((m) => {
+          lines.push(`[${m.time} | 电量 ${m.battery}% | ${m.mood}]`);
+          lines.push(m.text);
+          lines.push(``);
+        });
+      }
+
+      const content = lines.join(`\n`);
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: content,
+          contentType: `text/plain`,
+          encoding: `UTF-8`,
+          filename: `yuhui_new_memo.txt`
+        });
+        if (status) {
+          status.classList.remove(`inline-error`);
+          status.textContent = `已触发导出纯文本备忘录。`;
+        }
+      } else if (status) {
+        status.textContent = `当前环境暂不支持文件下载，记录已安全保留在页面状态中。`;
+      }
+    }
+
+    // =========================================================================
+    // 9. Icon Refresh & App Initialization
+    // =========================================================================
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    async function initApp() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            appState = Object.assign({}, appState, saved);
+            if (!appState.routines) {
+              appState.routines = {
+                bed1: false, bed2: false, bed3: false,
+                morn1: false, morn2: false, morn3: false, morn4: false, morn5: false
+              };
+            }
+            if (!Array.isArray(appState.memos)) appState.memos = [];
+            if (!Array.isArray(appState.resonatedSessions)) appState.resonatedSessions = [];
+          }
+        }
+      } catch (err) {
+        // Fallback to default state gracefully
+      }
+
+      renderTrajectoryChart();
+      selectPhase(appState.selectedPhase || 4);
+      renderThemes();
+      renderBatteryUI();
+      renderMoodPills();
+      renderRoutines();
+      renderMemos();
+
+      const cycEl = document.getElementById(`breath-cycles-label`);
+      if (cycEl) cycEl.textContent = `已完成循环：${appState.breathCycles || 0} 轮`;
+
+      refreshIcons();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
